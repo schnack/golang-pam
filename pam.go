@@ -40,7 +40,8 @@ type conversation struct {
 func newConversation(handler ConversationHandler) *conversation {
     conv := &conversation{}
     conv.handler = handler
-    conv.cconv = C.make_gopam_conv(unsafe.Pointer(conv))
+    conv.cconv = C.make_gopam_conv()
+    conv.cconv.appdata_ptr = unsafe.Pointer(conv)
     return conv
 }
 

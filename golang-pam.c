@@ -56,14 +56,14 @@ int gopam_conv(int num_msg, const struct pam_message **msg, struct pam_response 
 
 /* This allocates a new pam_conv struct and fills in its fields:
    The conv function pointer always points to the universal gopam_conv.
-   The appdata_ptr will be set to the incoming void* argument, which
-   is always a Go-side *pam.conversation whose handler was given
-   to pam.Start(). */
-struct pam_conv* make_gopam_conv(void *goconv)
+   appdata_ptr should be set to the *pam.conversation returned by
+   pam.Start(). It needs to be set by whatever calls this becuase it'll
+   be a Go-side pointer and go1.6 (https://github.com/golang/go/issues/12416)
+   prevents intermingling pointers like that. */
+struct pam_conv* make_gopam_conv()
 {
     struct pam_conv* conv = (struct pam_conv*)malloc(sizeof(struct pam_conv));
     conv->conv = gopam_conv;
-    conv->appdata_ptr = goconv;
     return conv;
 }
 
